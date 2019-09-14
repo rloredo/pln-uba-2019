@@ -39,8 +39,8 @@ class POSStats:
         #Create dictionaries 
         #Create a word dict (keys are words and values are POS tags + n of occurencies)
         self.word_dict = defaultdict(lambda: defaultdict(int))
-        #Create a tag dict (keys are tags and values are words with those tags + n of occurencies)
-        self.tag_dict = defaultdict(lambda: defaultdict(int))
+        #Create a tag dict (keys are tags and values n of occurencies)
+        self.tag_dict = defaultdict(int)
         #Create a freq dict (keys are words and values are n of occurencies)
         self.freq_dict = defaultdict(int)
         
@@ -48,7 +48,7 @@ class POSStats:
                 for word, tag in sent:
                    
                     self.word_dict[word][tag] += 1
-                    self.tag_dict[tag][word] += 1
+                    self.tag_dict[tag] += 1
                     self.freq_dict[word] += 1
                     
                     
