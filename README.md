@@ -46,3 +46,16 @@ n	words	%	top
 9	0	0.00	()
 ```
 
+
+| Tag    |  Meaning |
+|------- | -------- |
+|sp000   |  Preposición 
+|nc0s000 |  Sustantivo común singular
+|da0000  |  Artículo
+|aq0000  |  Adjetivo Descriptivo
+|fc      |  Coma
+|np00000 |  Nombre Propio (sustantivo)
+|nc0p000 |  Sustantivo común plural
+|fp      |  Punto
+|rg      |  Adverbio
+|cc      |  Conjunción
