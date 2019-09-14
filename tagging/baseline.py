@@ -1,6 +1,5 @@
 from collections import defaultdict
 
-
 class BadBaselineTagger:
 
     def __init__(self, tagged_sents, default_tag='nc0s000'):
@@ -34,12 +33,21 @@ class BadBaselineTagger:
 
 class BaselineTagger:
 
-    def __init__(self, tagged_sents, default_tag=None):
+    def __init__(self, tagged_sents, default_tag='nc0s000'):
         """
         tagged_sents -- training sentences, each one being a list of pairs.
         default_tag -- tag for unknown words.
         """
-        # WORK HERE!!
+        
+        self.default_tag = default_tag
+        
+        word_tags = defaultdict(lambda: defaultdict(int))
+        
+        for sent in tagged_sents:
+            for word, tag in sent:
+                word_tags[word][tag] += 1
+
+        self.word_tags = dict(word_tags)
 
     def tag(self, sent):
         """Tag a sentence.
@@ -53,11 +61,15 @@ class BaselineTagger:
 
         w -- the word.
         """
-        # WORK HERE!!
+        if self.unknown(w):
+            return self.default_tag
+        else:
+           return max(self.word_tags[w], key=self.word_tags[w].get)
+           
 
     def unknown(self, w):
         """Check if a word is unknown for the model.
 
         w -- the word.
         """
-        # WORK HERE!!
+        return w in self.word_tags
