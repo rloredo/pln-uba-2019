@@ -41,13 +41,13 @@ class BaselineTagger:
         
         self.default_tag = default_tag
         
-        word_tags = defaultdict(lambda: defaultdict(int))
+        self.word_tags = defaultdict(lambda: defaultdict(int))
         
-        for sent in tagged_sents:
+        for sent in list(tagged_sents):
             for word, tag in sent:
-                word_tags[word][tag] += 1
+                self.word_tags[word][tag] += 1
 
-        self.word_tags = dict(word_tags)
+        self.word_tags = dict(self.word_tags)
 
     def tag(self, sent):
         """Tag a sentence.
@@ -60,7 +60,7 @@ class BaselineTagger:
         """Tag a word.
 
         w -- the word.
-        """
+        """ 
         if self.unknown(w):
             return self.default_tag
         else:
@@ -72,4 +72,8 @@ class BaselineTagger:
 
         w -- the word.
         """
-        return w in self.word_tags
+        if w in self.word_tags:
+            return False
+        else:
+            return True
+
