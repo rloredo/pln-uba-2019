@@ -36,24 +36,25 @@ class POSStats:
         
         #
         #
-        #Create dictionaries for other stuff
+        #Create dictionaries 
         #Create a word dict (keys are words and values are POS tags + n of occurencies)
         self.word_dict = defaultdict(lambda: defaultdict(int))
-        
-        for sent in self.corpus:
-                for word, tag in sent:
-                    # Save the word and tags:
-                    self.word_dict[word][tag] += 1
-        self.word_dict = dict(self.word_dict)
-        
-        #We create a tag dict (keys are tags and values are words with those tags + n of occurencies)
+        #Create a tag dict (keys are tags and values are words with those tags + n of occurencies)
         self.tag_dict = defaultdict(lambda: defaultdict(int))
+        #Create a freq dict (keys are words and values are n of occurencies)
+        self.freq_dict = defaultdict(int)
         
         for sent in self.corpus:
                 for word, tag in sent:
-                    # Save the tag and words:
+                   
+                    self.word_dict[word][tag] += 1
                     self.tag_dict[tag][word] += 1
+                    self.freq_dict[word] += 1
+                    
+                    
+        self.word_dict = dict(self.word_dict)                   
         self.tag_dict = dict(self.tag_dict)        
+        self.freq_dict = dict(self.freq_dict) 
       
         
     def sent_count(self):
@@ -75,7 +76,7 @@ class POSStats:
 
     def word_freq(self, w):
         """Frequency of word w."""                    
-        return self.corpus_words.count(w) / self.word_count()
+        return self.freq_dict[w] / self.word_count()
 
     def unambiguous_words(self):
         """List of words with only one observed POS tag."""
@@ -159,7 +160,7 @@ if __name__ == '__main__':
     for n in range(1, 10):
         words = stats.ambiguous_words(n)
         m = len(words)
-
+        
         # most frequent words:
         sorted_words = sorted(words, key=lambda w: -stats.word_freq(w))
         top = sorted_words[:5]
