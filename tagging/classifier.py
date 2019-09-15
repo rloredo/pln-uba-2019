@@ -2,11 +2,12 @@ from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.svm import LinearSVC
 from sklearn.linear_model import LogisticRegression
-
+from sklearn.naive_bayes import MultinomialNB
 
 classifiers = {
     'lr': LogisticRegression,
     'svm': LinearSVC,
+    'nbc': MultinomialNB,
 }
 
 
@@ -17,7 +18,32 @@ def feature_dict(sent, i):
     i -- the position.
     """
     # WORK HERE!!
-    return {}
+    
+    feature_dict = {}  #This is the dictionary that will be returned
+
+    #Features for all words
+    features = {'lw': str.lower, 'tw': str.istitle, 'uw': str.isupper, 'wd': str.isdigit}
+    
+    #Current word
+    words = {'current': sent[i][0]}
+    
+    #Previous word
+    if i == 0:
+        words['previous'] = ' '
+    else:
+        words['previous'] = sent[i-1][0]
+    
+    #Next word
+    if i == len(sent):
+        words['next'] = ' '
+    else:
+        words['next'] = sent[i+1][0]
+        
+    #Apply features. key: current/prev/next _feature  value: value
+    for key, value in words.items():
+        for name, feature in features.items():
+            feature_dict[key.lstrip()+'_'+name] = feature(value)            
+    return feature_dict
 
 
 class ClassifierTagger:
