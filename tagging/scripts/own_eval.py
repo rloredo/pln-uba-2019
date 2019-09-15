@@ -1,27 +1,13 @@
-"""Evaulate a tagger.
-
-Usage:
-  eval.py [options] -c <path> -i <file>
-  eval.py -h | --help
-
-Options:
-  -c <path>     Ancora corpus path.
-  -i <file>     Tagging model file.
-  -p            Show progress bar.
-  -m            Show confusion matrix.
-  -h --help     Show this screen.
-"""
-
 import pickle
 from collections import defaultdict
 from tagging.ancora import SimpleAncoraCorpusReader
 
 #For plotting confussion matrix
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 
 # load the model
-filename = 'baselineTag'
+filename = 'baselineTag' #Name of pickle model (main wd)
 f = open(filename, 'rb')
 model = pickle.load(f)
 f.close()  
@@ -102,21 +88,28 @@ sorted_error_count = sorted(error_count.keys(),
                           key=lambda t: -sum(error_count[t].values()))
 entries = sorted_error_count[:10]
 
+
+
+#Print table for github markdown
 # print table header
-print('g \ m', end='')
+print('|g \ m ', end='')
 for t in entries:
-    print('\t{}'.format(t), end='')
+    print('\t|{}'.format(t), end='')
+print('')
+print('|:-------:', end='')
+for t in entries:
+    print('\t|:-----------:'.format(t), end='')
 print('')
 
 # print table rows
 for t1 in entries:
-    print('{}\t'.format(t1), end='')
+    print('|**{}**|\t'.format(t1), end='')
     for t2 in entries:
         if error_count[t1][t2] > 0:
             acc = error_count[t1][t2] / total
-            print('{:2.2f}\t'.format(acc * 100), end='')
+            print('{:2.2f}|\t'.format(acc * 100), end='')
         else:
-            print('-\t'.format(acc * 100), end='')
+            print('-|\t'.format(acc * 100), end='')
     print('')
 
 
