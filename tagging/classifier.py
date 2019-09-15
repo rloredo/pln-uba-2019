@@ -3,6 +3,7 @@ from sklearn.feature_extraction import DictVectorizer
 from sklearn.svm import LinearSVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import MultinomialNB
+from tqdm import tqdm
 
 classifiers = {
     'lr': LogisticRegression,
@@ -34,7 +35,7 @@ def feature_dict(sent, i):
         words['previous'] = sent[i-1][0]
     
     #Next word
-    if i == len(sent):
+    if i == len(sent)-1:
         words['next'] = ' '
     else:
         words['next'] = sent[i+1][0]
@@ -46,15 +47,22 @@ def feature_dict(sent, i):
     return feature_dict
 
 
+
 class ClassifierTagger:
     """Simple and fast classifier based tagger.
     """
 
     def __init__(self, tagged_sents, clf='lr'):
         """
-        clf -- classifying model, one of 'svm', 'lr' (default: 'lr').
+        clf -- classifying model, one of 'svm', 'nbc', 'lr' (default: 'lr').
         """
-        # WORK HERE!!
+        self.word_set = set()
+        
+        self.pipeline = Pipeline([
+            ('vect', DictVectorizer()),
+            ('clf', classifiers[clf]()),])
+
+        self.fit(tagged_sents)
 
     def fit(self, tagged_sents):
         """
@@ -62,25 +70,64 @@ class ClassifierTagger:
 
         tagged_sents -- list of sentences, each one being a list of pairs.
         """
-        # WORK HERE!!
+        print('')
+        print('extracting features')
+        X, y = self.trainSet(tagged_sents)
+        print('')
+        print('fitting')
+        self.pipeline.fit(X, y)
 
     def tag_sents(self, sents):
         """Tag sentences.
 
         sent -- the sentences.
         """
-        # WORK HERE!!
+        return [self.tag(sent) for sent in sents]
 
     def tag(self, sent):
         """Tag a sentence.
 
         sent -- the sentence.
         """
-        # WORK HERE!!
+        x = []
+        for i in range(len(sent)):
+            x.append(feature_dict(sent, i))
+            
+        tags = list(self.pipeline.predict(x))
+        return tags
 
     def unknown(self, w):
         """Check if a word is unknown for the model.
 
         w -- the word.
         """
-        # WORK HERE!!
+        
+        return not(w in self.word_set)
+        
+        
+    def trainSet(self, tagged_sent):
+        """
+            Gets the features (Xs) and correct tag (y)
+        
+        """
+        X = []
+        y = []
+        word_set = set()
+        for sent in tqdm(tagged_sent):
+            if not sent:
+                continue
+            s, t = zip(*sent)
+            word_set.update(s)
+            for i in range(len(sent)):
+                X.append(feature_dict(s, i))
+                y.append((t[i]))
+        self.word_set = word_set
+        return X, y
+        
+        
+        
+        
+        
+        
+        
+        
