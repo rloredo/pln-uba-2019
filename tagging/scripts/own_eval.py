@@ -1,13 +1,13 @@
 import pickle
 from collections import defaultdict
 from tagging.ancora import SimpleAncoraCorpusReader
-
+import time
 #For plotting confussion matrix
 #import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 
 # load the model
-filename = 'baselineTag' #Name of pickle model (main wd)
+filename = 'classifierNBC' #Name of pickle model (main wd)
 f = open(filename, 'rb')
 model = pickle.load(f)
 f.close()  
@@ -27,6 +27,8 @@ y_tags = []
 pred_tags = []
 
 n = len(sents)
+start = time.time()
+
 
 for i, sent in enumerate(sents):
     word_sent, gold_tag_sent = zip(*sent)
@@ -63,8 +65,6 @@ for i, sent in enumerate(sents):
 
     format_str = '{:3.1f}% ({:2.2f}% / {:2.2f}% / {:2.2f}%)'
 
-
-
 #Get accuracy
 acc = float(hits) / total * 100
 if total == unk_total:
@@ -75,7 +75,8 @@ unk_acc = float(unk_hits) / unk_total * 100
 
 print('')
 print('Accuracy: {:2.2f}% / {:2.2f}% / {:2.2f}% (total / known / unk)'.format(acc, k_acc, unk_acc))
-
+end = time.time()
+print(end - start)
 
 # print confusion matrix
 print('')
@@ -87,8 +88,6 @@ assert total == sum(sum(d.values()) for d in error_count.values())
 sorted_error_count = sorted(error_count.keys(),
                           key=lambda t: -sum(error_count[t].values()))
 entries = sorted_error_count[:10]
-
-
 
 #Print table for github markdown
 # print table header
