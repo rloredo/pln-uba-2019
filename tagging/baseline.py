@@ -72,9 +72,6 @@ class BaselineTagger:
 
         w -- the word.
         """
-        if w in self.word_tags:
-            return False
-        else:
-            return True
+        return not(w in self.word_tags)
 
 
