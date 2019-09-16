@@ -12,22 +12,25 @@ models = {
 }
 
 path = 'ancora-3.0.1es' #Path to corpus
-filename = 'classifierNBC' #Name of pickle
+filename = 'classifierLR' #Name of pickle
 selectedModel = 'classifier'
 
 # load the data
 files = 'CESS-CAST-(A|AA|P)/.*\.tbf\.xml'
 corpus = SimpleAncoraCorpusReader(path, files)     
-sents = corpus.tagged_sents()
+sents = list(corpus.tagged_sents())
 
 # train the model
 model_class = models[selectedModel]  
 
 start = time.time()
-model = model_class(sents, 'nbc')
+model = model_class(sents, 'lr')
 end = time.time()
 print(end - start)
-(end-start)/60
+print((end-start)/60)
+
+#sent = 'El gato come pescado .'.split()
+#model.tag(sent)
 
 # save it
 f = open(filename, 'wb')

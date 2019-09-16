@@ -2,9 +2,8 @@ import pickle
 from collections import defaultdict
 from tagging.ancora import SimpleAncoraCorpusReader
 import time
-#For plotting confussion matrix
-#import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix
+from tqdm import tqdm
+
 
 # load the model
 filename = 'classifierNBC' #Name of pickle model (main wd)
@@ -29,8 +28,8 @@ pred_tags = []
 n = len(sents)
 start = time.time()
 
-
-for i, sent in enumerate(sents):
+print('Predicting tags...')
+for i, sent in tqdm(enumerate(sents)):
     word_sent, gold_tag_sent = zip(*sent)
     model_tag_sent = model.tag(word_sent)
     assert len(model_tag_sent) == len(gold_tag_sent), i
@@ -112,8 +111,3 @@ for t1 in entries:
     print('')
 
 
-plt.matshow(confusion_matrix(y_tags, pred_tags))
-plt.colorbar()
-plt.ylabel('True label')
-plt.xlabel('Predicted label')
-plt.title('Confusion matrix')
