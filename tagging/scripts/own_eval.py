@@ -6,10 +6,14 @@ from tqdm import tqdm
 
 
 # load the model
-filename = 'classifierNBC' #Name of pickle model (main wd)
+filename = 'tagging/classifierLR' #Name of pickle model (main wd)
 f = open(filename, 'rb')
 model = pickle.load(f)
 f.close()  
+
+
+print(model.tag(['El', 'gato', 'come', 'arroz', '.']))
+
 
 # load the data
 path = 'ancora-3.0.1es' #Path to corpus
@@ -25,13 +29,19 @@ error_sents = defaultdict(lambda: defaultdict(set))
 y_tags = []
 pred_tags = []
 
+
+
+
+
 n = len(sents)
+
 start = time.time()
 
 print('Predicting tags...')
 for i, sent in tqdm(enumerate(sents)):
     word_sent, gold_tag_sent = zip(*sent)
     model_tag_sent = model.tag(word_sent)
+    
     assert len(model_tag_sent) == len(gold_tag_sent), i
     
     y_tags.append(gold_tag_sent)
