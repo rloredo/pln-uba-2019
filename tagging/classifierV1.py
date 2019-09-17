@@ -40,9 +40,6 @@ def feature_dict(sent, i):
         else:
             for name, feature in features.items():
                 feat_dict[key.lstrip()+'_'+name] = feature(value)
-    
-    #Termina en s?
-    feat_dict["endS"] = sent[i][-1] == 's'
                 
     return feat_dict
 
