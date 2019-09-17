@@ -11,7 +11,7 @@ Options:
                   class: Classifier
   -c <path>     Ancora corpus path.
   -t <classifier> If model classifier is selected [default: lr]:
-                  lr: linear regression
+                  lr: logistic regression
                   svm: linear SVC
                   mnb: MultinomialNB
   -o <file>     Output model file.
