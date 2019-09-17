@@ -8,8 +8,15 @@ Options:
   -m <model>    Model to use [default: badbase]:
                   badbase: Bad baseline
                   base: Baseline
+                  class: Classifier
   -c <path>     Ancora corpus path.
+  -t <classifier> If model classifier is selected [default: lr]:
+                  lr: linear regression
+                  svm: linear SVC
+                  mnb: MultinomialNB
   -o <file>     Output model file.
+
+
   -h --help     Show this screen.
 """
 from docopt import docopt
@@ -17,12 +24,22 @@ import pickle
 
 from tagging.ancora import SimpleAncoraCorpusReader
 from tagging.baseline import BaselineTagger, BadBaselineTagger
+from tagging.classifier import *
+import time
 
 
 models = {
     'badbase': BadBaselineTagger,
     'base': BaselineTagger,
+    'class': ClassifierTagger,
 }
+
+classifiers = {
+    'lr': 'lr',
+    'svm': 'svm',
+    'mnb': 'mnb',
+}
+
 
 
 if __name__ == '__main__':
@@ -33,12 +50,31 @@ if __name__ == '__main__':
     corpus = SimpleAncoraCorpusReader(opts['-c'], files)
     sents = corpus.tagged_sents()
 
-    # train the model
     model_class = models[opts['-m']]
-    model = model_class(sents)
+
+    # train the models
+
+    #If classifier train with -t opt
+    if opts['-m'] == 'class':
+        classToUse = classifiers[opts['-t']]
+        print('training classifier with:',classToUse,' model')
+        start = time.time()
+        sents_list = list(sents)
+        model = model_class(sents_list, classToUse)
+        end = time.time()
+        print('Training time', end - start)
+
+    #Else train baseline or base
+    else:
+        start = time.time()
+        model = model_class(sents)
+        end = time.time()
+        print('Training time', end - start)
 
     # save it
+    print('Saving...')
     filename = opts['-o']
     f = open(filename, 'wb')
     pickle.dump(model, f)
     f.close()
+    print('All done!')
