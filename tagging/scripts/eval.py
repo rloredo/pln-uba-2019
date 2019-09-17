@@ -9,12 +9,15 @@ Options:
   -i <file>     Tagging model file.
   -p            Show progress bar.
   -m            Show confusion matrix.
+  -g            Show confusion matrix with github markdown.
+
   -h --help     Show this screen.
 """
 from docopt import docopt
 import pickle
 import sys
 from collections import defaultdict
+import time
 
 from tagging.ancora import SimpleAncoraCorpusReader
 
@@ -47,6 +50,7 @@ if __name__ == '__main__':
     error_count = defaultdict(lambda: defaultdict(int))
     error_sents = defaultdict(lambda: defaultdict(set))
     n = len(sents)
+    start = time.time()
     for i, sent in enumerate(sents):
         word_sent, gold_tag_sent = zip(*sent)
         model_tag_sent = model.tag(word_sent)
@@ -80,6 +84,8 @@ if __name__ == '__main__':
         format_str = '{:3.1f}% ({:2.2f}% / {:2.2f}% / {:2.2f}%)'
         if opts['-p']:
             progress(format_str.format(float(i) * 100 / n, acc, k_acc, unk_acc))
+    end = time.time()
+    print('Evaluation time', end - start)
 
     acc = float(hits) / total * 100
     if total == unk_total:
@@ -118,4 +124,35 @@ if __name__ == '__main__':
                     print('{:2.2f}\t'.format(acc * 100), end='')
                 else:
                     print('-\t'.format(acc * 100), end='')
+            print('')
+
+    if opts['-g']:
+        # print confusion matrix with withub markdown github
+        print('')
+        # basic check
+        assert total == sum(sum(d.values()) for d in error_count.values())
+        # select most frequent tags
+        sorted_error_count = sorted(error_count.keys(),
+                                  key=lambda t: -sum(error_count[t].values()))
+        entries = sorted_error_count[:10]
+
+        # print table header
+        print('|g \ m ', end='')
+        for t in entries:
+            print('\t|{}'.format(t), end='')
+        print('')
+        print('|:-------:', end='')
+        for t in entries:
+            print('\t|:-----------:'.format(t), end='')
+        print('')
+
+        # print table rows
+        for t1 in entries:
+            print('|**{}**|\t'.format(t1), end='')
+            for t2 in entries:
+                if error_count[t1][t2] > 0:
+                    acc = error_count[t1][t2] / total
+                    print('{:2.2f}|\t'.format(acc * 100), end='')
+                else:
+                    print('-|\t'.format(acc * 100), end='')
             print('')
