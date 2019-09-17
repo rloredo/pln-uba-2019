@@ -108,7 +108,7 @@ if __name__ == '__main__':
     opts = docopt(__doc__)
 
     # load the data
-    corpus = SimpleAncoraCorpusReader(opts['<path>']) # opts -c returns boolean, path returns path
+    corpus = SimpleAncoraCorpusReader(opts['-c']) 
     sents = corpus.tagged_sents()
 
     # compute the statistics
