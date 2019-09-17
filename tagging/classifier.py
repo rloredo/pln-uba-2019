@@ -3,7 +3,6 @@ from sklearn.feature_extraction import DictVectorizer
 from sklearn.svm import LinearSVC
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
-from tqdm import tqdm
 
 classifiers = {
     'lr': LogisticRegression,
@@ -75,7 +74,7 @@ class ClassifierTagger:
         X, y = [], []
         words = set()     
       
-        for tagged_sent in tqdm(tagged_sents):
+        for tagged_sent in tagged_sents:
             
             if not tagged_sents:
                 continue
