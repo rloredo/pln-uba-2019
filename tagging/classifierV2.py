@@ -67,7 +67,7 @@ class ClassifierTagger:
         Train.
         tagged_sents -- list of sentences, each one being a list of pairs.
         """
-        print('Extracting features')
+        print('Extracting features V2')
         self.getXY(tagged_sents)
         print('')
         print('Executing pipeline')

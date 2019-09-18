@@ -40,6 +40,10 @@ def feature_dict(sent, i):
         else:
             for name, feature in features.items():
                 feat_dict[key.lstrip()+'_'+name] = feature(value)
+    
+    #Termina en s o mente?
+    feat_dict["currentW_endS"] = sent[i][-1] == 's'
+    feat_dict["currentW_endMente"] = sent[i][-5:] == 'mente'
                 
     return feat_dict
 
@@ -64,7 +68,7 @@ class ClassifierTagger:
         Train.
         tagged_sents -- list of sentences, each one being a list of pairs.
         """
-        print('Extracting features V1')
+        print('Extracting features V3')
         self.getXY(tagged_sents)
         print('')
         print('Executing pipeline')
