@@ -163,4 +163,4 @@ Accuracy: 84.28% / 88.07% / 49.99% (total / known / unk)
 
 ## Ejercicio 4
 
-Ver Ejercicio_4.ipynb
+Ver <a href="https://github.com/rloredo/pln-uba-2019/blob/master/Ejercicio_4.ipynb">Ejercicio_4.ipynb</a>
