@@ -1,6 +1,8 @@
 # pln-uba-2019
 Introducción al Procesamiento de Lenguaje Natural - UBA 2019
 
+Link a las consignas: https://wiki.cs.famaf.unc.edu.ar/doku.php?id=materias:pln:uba2019:practico1
+
 ## Ejercicio 1 | stats.py
 ```console
 Basic Statistics
