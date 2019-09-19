@@ -13,14 +13,14 @@ classifiers = {
 
 def feature_dict(sent, i):
     feat_dict = {}
-    
+
     features = {
         "w": str.lower,
         "wu": str.isupper,
         "wt": str.istitle,
         "wd": str.isdigit,
     }
-    
+
     #Current word, previous, next (add sentence start/finish as makers)
     words = {'currentW': sent[i]}
     if i == 0:
@@ -31,7 +31,7 @@ def feature_dict(sent, i):
         words['nextW'] = '</s>'
     else:
         words['nextW'] = sent[i + 1]
-    
+
     # Extract features
     for key, value in words.items():
         if value == '<s>':
@@ -41,11 +41,11 @@ def feature_dict(sent, i):
         else:
             for name, feature in features.items():
                 feat_dict[key.lstrip()+'_'+name] = feature(value)
-    
+
     #Termina en s o mente?
     feat_dict["currentW_endS"] = sent[i][-1] == 's'
     feat_dict["currentW_endMente"] = sent[i][-5:] == 'mente'
-                
+
     return feat_dict
 
 class ClassifierTagger:
@@ -56,13 +56,11 @@ class ClassifierTagger:
         """
         clf -- classifying model, one of 'svm', 'lr' (default: 'lr').
         """
-        self._pipeline = Pipeline([
-            ('vect', FeatureUnion([
-                ('ft', FasttextDictVectorizer('tagging/ftextmodels/cc.es.300.bin', ['w'])),
-                ('std', DictVectorizer())
-            ])),
-            ('clf', classifiers[clf]())
-        ])
+        self.pipeline = Pipeline(
+                steps=[
+                    ('vect', DictVectorizer(sparse=True)),
+                    ('clf', classifiers[clf]())
+                 ])
 
         self.fit(tagged_sents)
 
@@ -79,20 +77,20 @@ class ClassifierTagger:
 
     def getXY(self, tagged_sents):
         X, y = [], []
-        words = set()     
-      
+        words = set()
+
         for tagged_sent in tagged_sents:
-            
+
             if not tagged_sents:
                 continue
             if len(tagged_sent) == 0:
                 continue
-            
+
             sent_words, sent_tags = zip(*tagged_sent)
             y.extend(sent_tags)
             words.update(sent_words)
-            
-            for i in range(len(sent_words)):    
+
+            for i in range(len(sent_words)):
                 X.append(feature_dict(sent_words, i))
 
         self.X, self.y, self.words = X, y, words
@@ -115,3 +113,17 @@ class ClassifierTagger:
         w -- the word.
         """
         return not(w in self.words)
+
+
+class FastTextClassifier(ClassifierTagger):
+    def __init__(self, tagged_sents, clf='lr'):
+
+        self.pipeline = Pipeline([
+            ('vect', FeatureUnion([
+                ('ft', FasttextDictVectorizer('tagging/ftextmodels/cc.es.300.bin', ['w'])),
+                ('twv', DictVectorizer())
+            ])),
+            ('clf', classifiers[clf]())
+        ])
+
+        self.pipeline.fit(tagged_sents)

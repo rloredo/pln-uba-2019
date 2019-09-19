@@ -7,7 +7,7 @@ Usage:
 Options:
 
   -c <path>     Ancora corpus path.
-  
+
   -m <model>    Model to use [default: badbase]:
                   badbase: Bad baseline
                   base: Baseline
@@ -18,19 +18,19 @@ Options:
                   2: added ending in -s
                   3: added ending in -mente
                   4: added fastText vectors
-                  
+
   -t <classifier> If model classifier is selected [default: lr]:
                   lr: logistic regression
                   svm: linear SVC
                   mnb: MultinomialNB
-                  
+
   -o <file>     Output model file.
 
 
   -h --help     Show this screen.
-  
-  
-  Version 2
+
+
+  Version 3
 """
 from docopt import docopt
 import pickle
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     files = 'CESS-CAST-(A|AA|P)/.*\.tbf\.xml'
     corpus = SimpleAncoraCorpusReader(opts['-c'], files)
     sents = corpus.tagged_sents()
-    
+
 
     # train the models
 
@@ -68,14 +68,18 @@ if __name__ == '__main__':
     if opts['-m'] == 'classifier':
         if int(opts['-v']) == 2:
             from tagging.classifierV2 import *
+            model_class = ClassifierTagger
         elif int(opts['-v']) == 3:
             from tagging.classifierV3 import *
+            model_class = ClassifierTagger
         elif int(opts['-v']) == 4:
             from tagging.classifierV4 import *
+            model_class = FastTextClassifier
         else:
             from tagging.classifierV1 import *
-            
-        model_class = ClassifierTagger
+            model_class = ClassifierTagger
+
+
         classToUse = classTypes[opts['-t']]
         print('training classifier with:',classToUse,' model')
         start = time.time()
