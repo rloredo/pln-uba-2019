@@ -1,10 +1,10 @@
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
-from fastText import load_model
+from fasttext import load_model
 
 
 class FasttextDictVectorizer(BaseEstimator, TransformerMixin):
-    """Vectorizer for fastText embeddings in binary format.
+    """Vectorizer for fastext embeddings in binary format.
     """
 
     def __init__(self, filename, keys):
