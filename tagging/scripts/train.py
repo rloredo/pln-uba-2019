@@ -17,6 +17,7 @@ Options:
                   1: Only base features
                   2: added ending in -s
                   3: added ending in -mente
+                  4: added fastText vectors
                   
   -t <classifier> If model classifier is selected [default: lr]:
                   lr: logistic regression
@@ -36,7 +37,6 @@ import pickle
 
 from tagging.ancora import SimpleAncoraCorpusReader
 from tagging.baseline import BaselineTagger, BadBaselineTagger
-from tagging.classifierV1 import *
 import time
 
 
@@ -66,12 +66,14 @@ if __name__ == '__main__':
 
     #If classifier train with -t opt
     if opts['-m'] == 'classifier':
-        if int(opts['-v']) == 1:
-            from tagging.classifierV1 import *
-        elif int(opts['-v']) == 2:
+        if int(opts['-v']) == 2:
             from tagging.classifierV2 import *
-        else:
+        elif int(opts['-v']) == 3:
             from tagging.classifierV3 import *
+        elif int(opts['-v']) == 4:
+            from tagging.classifierV4 import *
+        else:
+            from tagging.classifierV1 import *
             
         model_class = ClassifierTagger
         classToUse = classTypes[opts['-t']]
