@@ -117,13 +117,13 @@ class ClassifierTagger:
 
 class FastTextClassifier(ClassifierTagger):
     def __init__(self, tagged_sents, clf='lr'):
-
-        self.pipeline = Pipeline([
+        self.pipeline = Pipeline(
+                steps=[
             ('vect', FeatureUnion([
-                ('ft', FasttextDictVectorizer('tagging/ftextmodels/cc.es.300.bin', ['currentW_w'])),
+                ('ft', FasttextDictVectorizer('tagging/ftextmodels/cc.es.300.bin', [['currentW_w']])),
                 ('twv', DictVectorizer())
             ])),
             ('clf', classifiers[clf]())
-        ])
+                 ])
 
-        self.pipeline.fit(tagged_sents)
+        self.fit(tagged_sents)
