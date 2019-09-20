@@ -58,8 +58,11 @@ class ClassifierTagger:
         """
         self.pipeline = Pipeline(
                 steps=[
-                    ('vect', DictVectorizer(sparse=True)),
-                    ('clf', classifiers[clf]())
+            ('vect', FeatureUnion([
+                ('ft', FasttextDictVectorizer('tagging/ftextmodels/cc.es.300.bin', [['currentW_w']])),
+                ('twv', DictVectorizer())
+            ])),
+            ('clf', classifiers[clf]())
                  ])
 
         self.fit(tagged_sents)
@@ -113,17 +116,3 @@ class ClassifierTagger:
         w -- the word.
         """
         return not(w in self.words)
-
-
-class FastTextClassifier(ClassifierTagger):
-    def __init__(self, tagged_sents, clf='lr'):
-        self.pipeline = Pipeline(
-                steps=[
-            ('vect', FeatureUnion([
-                ('ft', FasttextDictVectorizer('tagging/ftextmodels/cc.es.300.bin', [['currentW_w']])),
-                ('twv', DictVectorizer())
-            ])),
-            ('clf', classifiers[clf]())
-                 ])
-
-        self.fit(tagged_sents)

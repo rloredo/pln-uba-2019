@@ -30,7 +30,7 @@ Options:
   -h --help     Show this screen.
 
 
-  Version 3
+  Version 4
 """
 from docopt import docopt
 import pickle
@@ -55,7 +55,7 @@ classTypes = {
 
 if __name__ == '__main__':
     opts = docopt(__doc__)
-
+    print('v4')
     # load the data
     files = 'CESS-CAST-(A|AA|P)/.*\.tbf\.xml'
     corpus = SimpleAncoraCorpusReader(opts['-c'], files)
@@ -74,7 +74,7 @@ if __name__ == '__main__':
             model_class = ClassifierTagger
         elif int(opts['-v']) == 4:
             from tagging.classifierV4 import *
-            model_class = FastTextClassifier
+            model_class = ClassifierTagger
         else:
             from tagging.classifierV1 import *
             model_class = ClassifierTagger
