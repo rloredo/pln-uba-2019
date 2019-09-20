@@ -59,7 +59,7 @@ class ClassifierTagger:
         self.pipeline = Pipeline(
                 steps=[
             ('vect', FeatureUnion([
-                ('ft', FasttextDictVectorizer('tagging/ftextmodels/cc.es.300.bin', [['currentW_w']])),
+                ('ft', FasttextDictVectorizer('tagging/ftextmodels/cc.es.300.bin', ['currentW_w'])),
                 ('twv', DictVectorizer())
             ])),
             ('clf', classifiers[clf]())
